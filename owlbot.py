@@ -14,31 +14,25 @@
 
 """This script is used to synthesize generated parts of this library."""
 
-import subprocess
-import synthtool as s
-import synthtool.gcp as gcp
 import logging
+from pathlib import Path
+import subprocess
+
+import synthtool as s
+from synthtool.languages import php
+from synthtool import _tracked_paths
 
 logging.basicConfig(level=logging.DEBUG)
 
-gapic = gcp.GAPICBazel()
-common = gcp.CommonTemplates()
+src = Path(f"../{php.STAGING_DIR}/Datastore").resolve()
+dest = Path().resolve()
 
-library = gapic.php_library(
-    service='datastore',
-    version='v1',
-    bazel_target=f'//google/datastore/v1:google-cloud-datastore-v1-php',
-)
+# Added so that we can pass copy_excludes in the owlbot_main() call
+_tracked_paths.add(src)
 
-# copy all src including partial veneer classes
-s.move(library / 'src')
+php.owlbot_main(src=src, dest=dest)
 
-# copy proto files to src also
-s.move(library / 'proto/src/Google/Cloud/Datastore', 'src/')
-s.move(library / 'tests/')
 
-# copy GPBMetadata file to metadata
-s.move(library / 'proto/src/GPBMetadata/Google/Datastore', 'metadata/')
 
 # document and utilize apiEndpoint instead of serviceAddress
 s.replace(
@@ -57,20 +51,6 @@ s.replace(
     "**/Gapic/*GapicClient.php",
     r"\$transportConfig, and any \$serviceAddress",
     r"$transportConfig, and any `$apiEndpoint`")
-
-# fix year
-s.replace(
-    '**/Gapic/*GapicClient.php',
-    r'Copyright \d{4}',
-    'Copyright 2018')
-s.replace(
-    '**/V1/DatastoreClient.php',
-    r'Copyright \d{4}',
-    'Copyright 2018')
-s.replace(
-    'tests/**/V1/*Test.php',
-    r'Copyright \d{4}',
-    'Copyright 2018')
 
 # Fix class references in gapic samples
 for version in ['V1']:
