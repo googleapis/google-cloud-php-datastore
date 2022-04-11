@@ -40,6 +40,10 @@ class Mutation extends \Google\Protobuf\Internal\Message
      *           The version of the entity that this mutation is being applied
      *           to. If this does not match the current version on the server, the
      *           mutation conflicts.
+     *     @type \Google\Protobuf\Timestamp $update_time
+     *           The update time of the entity that this mutation is being applied
+     *           to. If this does not match the current update time on the server, the
+     *           mutation conflicts.
      * }
      */
     public function __construct($data = NULL) {
@@ -210,6 +214,41 @@ class Mutation extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkInt64($var);
         $this->writeOneof(8, $var);
+
+        return $this;
+    }
+
+    /**
+     * The update time of the entity that this mutation is being applied
+     * to. If this does not match the current update time on the server, the
+     * mutation conflicts.
+     *
+     * Generated from protobuf field <code>.google.protobuf.Timestamp update_time = 11;</code>
+     * @return \Google\Protobuf\Timestamp|null
+     */
+    public function getUpdateTime()
+    {
+        return $this->readOneof(11);
+    }
+
+    public function hasUpdateTime()
+    {
+        return $this->hasOneof(11);
+    }
+
+    /**
+     * The update time of the entity that this mutation is being applied
+     * to. If this does not match the current update time on the server, the
+     * mutation conflicts.
+     *
+     * Generated from protobuf field <code>.google.protobuf.Timestamp update_time = 11;</code>
+     * @param \Google\Protobuf\Timestamp $var
+     * @return $this
+     */
+    public function setUpdateTime($var)
+    {
+        GPBUtil::checkMessage($var, \Google\Protobuf\Timestamp::class);
+        $this->writeOneof(11, $var);
 
         return $this;
     }
